@@ -1,83 +1,113 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<title>Barranco adentro</title>
-<meta charset="utf-8">
-<meta name="viewport" content="target-densitydpi=device-dpi, width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui" />
-<style> @-ms-viewport { width: device-width; } </style>
-<link rel="stylesheet" href="vendor/reset.min.css">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tour Virtual</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background: #f2f2f2;
+    }
+    header {
+      background: #4CAF50;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      background: #333;
+      overflow: hidden;
+    }
+    nav a {
+      float: left;
+      display: block;
+      color: #f2f2f2;
+      text-align: center;
+      padding: 14px 16px;
+      text-decoration: none;
+    }
+    nav a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+    section {
+      padding: 20px;
+    }
+    .tour-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+    }
+    .tour {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      overflow: hidden;
+      width: 320px;
+    }
+    .tour iframe {
+      width: 100%;
+      height: 200px;
+      border: none;
+    }
+    .tour h3 {
+      margin: 10px;
+      text-align: center;
+    }
+    footer {
+      background: #333;
+      color: white;
+      text-align: center;
+      padding: 10px;
+      margin-top: 20px;
+    }
+  </style>
 </head>
-<body class="multiple-scenes view-control-buttons">
+<body>
 
-<div id="pano"></div>
+  <header>
+    <h1>Mis Tours Virtuales</h1>
+    <p>Explora nuestros espacios en 360°</p>
+  </header>
 
-<div id="sceneList">
-  <ul class="scenes">
-    
-      <a href="javascript:void(0)" class="scene" data-id="0-entrada">
-        <li class="text">entrada</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="1-vista-frontal">
-        <li class="text">vista Frontal</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="2-vista-lateral">
-        <li class="text">vista lateral</li>
-      </a>
-    
-      <a href="javascript:void(0)" class="scene" data-id="3-vista-literal">
-        <li class="text">vista literal</li>
-      </a>
-    
-  </ul>
-</div>
+  <nav>
+    <a href="#inicio">Inicio</a>
+    <a href="#tours">Tours</a>
+    <a href="#contacto">Contacto</a>
+  </nav>
 
-<div id="titleBar">
-  <h1 class="sceneName"></h1>
-</div>
+  <section id="inicio">
+    <h2>Bienvenido</h2>
+    <p>Aquí puedes ver los recorridos virtuales de nuestros espacios.</p>
+  </section>
 
-<a href="javascript:void(0)" id="autorotateToggle">
-  <img class="icon off" src="img/play.png">
-  <img class="icon on" src="img/pause.png">
-</a>
+  <section id="tours">
+    <h2>Tours Virtuales</h2>
+    <div class="tour-container">
+      <div class="tour">
+        <!-- Sustituye la URL por la de tu tour virtual (Kuula, Google Maps, etc.) -->
+        <iframe src="https://joselaz.github.io/lugares/barranco-adentro/index.html" allowfullscreen></iframe>
+        <h3>Tour 1</h3>
+      </div>
+      <div class="tour">
+        <iframe src="https://joselaz.github.io/lugares/barranco-adentro/index.html" allowfullscreen></iframe>
+        <h3>Tour 2</h3>
+      </div>
+      <!-- Puedes añadir más bloques como estos -->
+    </div>
+  </section>
 
-<a href="javascript:void(0)" id="fullscreenToggle">
-  <img class="icon off" src="img/fullscreen.png">
-  <img class="icon on" src="img/windowed.png">
-</a>
+  <section id="contacto">
+    <h2>Contacto</h2>
+    <p>Escribe aquí tus datos de contacto.</p>
+  </section>
 
-<a href="javascript:void(0)" id="sceneListToggle">
-  <img class="icon off" src="img/expand.png">
-  <img class="icon on" src="img/collapse.png">
-</a>
-
-<a href="javascript:void(0)" id="viewUp" class="viewControlButton viewControlButton-1">
-  <img class="icon" src="img/up.png">
-</a>
-<a href="javascript:void(0)" id="viewDown" class="viewControlButton viewControlButton-2">
-  <img class="icon" src="img/down.png">
-</a>
-<a href="javascript:void(0)" id="viewLeft" class="viewControlButton viewControlButton-3">
-  <img class="icon" src="img/left.png">
-</a>
-<a href="javascript:void(0)" id="viewRight" class="viewControlButton viewControlButton-4">
-  <img class="icon" src="img/right.png">
-</a>
-<a href="javascript:void(0)" id="viewIn" class="viewControlButton viewControlButton-5">
-  <img class="icon" src="img/plus.png">
-</a>
-<a href="javascript:void(0)" id="viewOut" class="viewControlButton viewControlButton-6">
-  <img class="icon" src="img/minus.png">
-</a>
-
-<script src="vendor/screenfull.min.js" ></script>
-<script src="vendor/bowser.min.js" ></script>
-<script src="vendor/marzipano.js" ></script>
-
-<script src="data.js"></script>
-<script src="index.js"></script>
+  <footer>
+    &copy; 2025 Mi Empresa de Tours Virtuales
+  </footer>
 
 </body>
 </html>
