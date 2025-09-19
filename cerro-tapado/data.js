@@ -1,8 +1,8 @@
 var APP_DATA = {
   "scenes": [
     {
-      "id": "0-entrada",
-      "name": "entrada",
+      "id": "0-vista-entrada",
+      "name": "vista entrada",
       "levels": [
         {
           "tileSize": 256,
@@ -20,24 +20,24 @@ var APP_DATA = {
       ],
       "faceSize": 896,
       "initialViewParameters": {
-        "pitch": 0,
-        "yaw": 0,
-        "fov": 1.5707963267948966
+        "yaw": 0.05008336114417489,
+        "pitch": 0.04294342350128133,
+        "fov": 1.1678810529903434
       },
       "linkHotspots": [
         {
-          "yaw": 0.0037653221685616245,
-          "pitch": -0.15684334608653572,
+          "yaw": -0.1679712791544148,
+          "pitch": -0.21518483225781537,
           "rotation": 0,
           "target": "1-vista-frontal"
         }
       ],
       "infoHotspots": [
         {
-          "yaw": 0.1863665938043475,
-          "pitch": -0.4098476945376852,
+          "yaw": 0.14993828686641741,
+          "pitch": -0.549527661515782,
           "title": "<font dir=\"auto\" style=\"vertical-align: inherit;\"><font dir=\"auto\" style=\"vertical-align: inherit;\">Torre Cerro Tapado</font></font>",
-          "text": "<font dir=\"auto\" style=\"vertical-align: inherit;\"><font dir=\"auto\" style=\"vertical-align: inherit;\">Tur virtual en 360</font></font>"
+          "text": "<font dir=\"auto\" style=\"vertical-align: inherit;\"><font dir=\"auto\" style=\"vertical-align: inherit;\">Tour virtual 360</font></font>"
         }
       ]
     },
@@ -67,22 +67,22 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": -0.6923054425767887,
-          "pitch": -0.026327165455199975,
+          "yaw": -0.7034893982018389,
+          "pitch": -0.002203528786344222,
           "rotation": 0,
           "target": "2-vista-lateral"
         },
         {
-          "yaw": 0.032018146705645734,
-          "pitch": -0.010138476379433214,
+          "yaw": 0.46569054669514465,
+          "pitch": -0.12316398218356994,
           "rotation": 0,
           "target": "3-vista-literal"
         },
         {
-          "yaw": 1.3795108861953587,
-          "pitch": 0.01147994515604367,
+          "yaw": 2.585186510474472,
+          "pitch": -0.2526056720836536,
           "rotation": 0,
-          "target": "0-entrada"
+          "target": "0-vista-entrada"
         }
       ],
       "infoHotspots": []
@@ -113,22 +113,22 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": 0.9522947807130606,
-          "pitch": -0.12596298552826113,
+          "yaw": 0.9344675740211699,
+          "pitch": -0.08620638509811585,
           "rotation": 0,
-          "target": "0-entrada"
+          "target": "0-vista-entrada"
         },
         {
-          "yaw": -0.49993305984321346,
-          "pitch": 0.15738879980797726,
-          "rotation": 0,
-          "target": "3-vista-literal"
-        },
-        {
-          "yaw": 1.2195802694748856,
-          "pitch": -0.11422961871324944,
+          "yaw": 1.1438194003225313,
+          "pitch": -0.0549370096049806,
           "rotation": 0,
           "target": "1-vista-frontal"
+        },
+        {
+          "yaw": -0.5376441449544274,
+          "pitch": 0.050091974661160776,
+          "rotation": 0,
+          "target": "3-vista-literal"
         }
       ],
       "infoHotspots": []
@@ -159,22 +159,22 @@ var APP_DATA = {
       },
       "linkHotspots": [
         {
-          "yaw": 0.8910721766782839,
-          "pitch": -0.009645154495672159,
-          "rotation": 0,
-          "target": "2-vista-lateral"
-        },
-        {
-          "yaw": 0.25305715207190005,
-          "pitch": -0.15947069853226736,
+          "yaw": 0.875561758502009,
+          "pitch": -0.18103467659944705,
           "rotation": 0,
           "target": "1-vista-frontal"
         },
         {
-          "yaw": -0.3227762279248658,
-          "pitch": -0.20226794873279985,
+          "yaw": -0.3512175506684905,
+          "pitch": -0.2964097142046622,
           "rotation": 0,
-          "target": "0-entrada"
+          "target": "0-vista-entrada"
+        },
+        {
+          "yaw": 0.3599891164356066,
+          "pitch": -0.2228948177385739,
+          "rotation": 0,
+          "target": "1-vista-frontal"
         }
       ],
       "infoHotspots": []
@@ -184,7 +184,7 @@ var APP_DATA = {
   "settings": {
     "mouseViewMode": "drag",
     "autorotateEnabled": true,
-    "fullscreenButton": false,
-    "viewControlButtons": false
+    "fullscreenButton": true,
+    "viewControlButtons": true
   }
 };
