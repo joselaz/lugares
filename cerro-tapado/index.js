@@ -407,9 +407,8 @@
   }, { passive: false });
 
   panoElement.addEventListener('touchend', function (event) {
-    if (event.touches.length < 2) {
-      pinchStartDistance = null;
-    }
-  });
-
+  if (event.touches.length < 2) {
+    pinchStartDistance = null;
+  }
+}, { passive: false });
 })();
