@@ -493,5 +493,3 @@
     if (event.touches.length < 2) {
       pinchStartDistance = null;
   });
-
-})();
