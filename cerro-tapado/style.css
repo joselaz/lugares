@@ -828,7 +828,3 @@ body.view-control-buttons .viewControlButton {
 .viewControlButton-6 {
   margin-left: 105px;
 }
-#pano {
-  touch-action: none;
-  -ms-touch-action: none;
-}
