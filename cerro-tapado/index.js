@@ -78,7 +78,7 @@
       { cubeMapPreviewUrl: urlPrefix + "/" + data.id + "/preview.jpg" });
     var geometry = new Marzipano.CubeGeometry(data.levels);
 
-    var limiter = Marzipano.RectilinearView.limit.traditional(data.faceSize, 100*Math.PI/180, 120*Math.PI/180);
+    var limiter = Marzipano.RectilinearView.limit.traditional(maxResolution/faceSize);
     var view = new Marzipano.RectilinearView(data.initialViewParameters, limiter);
 
     var scene = viewer.createScene({
@@ -245,34 +245,26 @@
   }
 
   function createLinkHotspotElement(hotspot) {
-
-    // Create wrapper element to hold icon and tooltip.
     var wrapper = document.createElement('div');
     wrapper.classList.add('hotspot');
     wrapper.classList.add('link-hotspot');
 
-    // Create image element.
     var icon = document.createElement('img');
     icon.src = 'img/link.png';
     icon.classList.add('link-hotspot-icon');
 
-    // Set rotation transform.
     var transformProperties = [ '-ms-transform', '-webkit-transform', 'transform' ];
     for (var i = 0; i < transformProperties.length; i++) {
       var property = transformProperties[i];
       icon.style[property] = 'rotate(' + hotspot.rotation + 'rad)';
     }
 
-    // Add click event handler.
     wrapper.addEventListener('click', function() {
       switchScene(findSceneById(hotspot.target));
     });
 
-    // Prevent touch and scroll events from reaching the parent element.
-    // This prevents the view control logic from interfering with the hotspot.
     stopTouchAndScrollEventPropagation(wrapper);
 
-    // Create tooltip element.
     var tooltip = document.createElement('div');
     tooltip.classList.add('hotspot-tooltip');
     tooltip.classList.add('link-hotspot-tooltip');
@@ -285,17 +277,13 @@
   }
 
   function createInfoHotspotElement(hotspot) {
-
-    // Create wrapper element to hold icon and tooltip.
     var wrapper = document.createElement('div');
     wrapper.classList.add('hotspot');
     wrapper.classList.add('info-hotspot');
 
-    // Create hotspot/tooltip header.
     var header = document.createElement('div');
     header.classList.add('info-hotspot-header');
 
-    // Create image element.
     var iconWrapper = document.createElement('div');
     iconWrapper.classList.add('info-hotspot-icon-wrapper');
     var icon = document.createElement('img');
@@ -303,7 +291,6 @@
     icon.classList.add('info-hotspot-icon');
     iconWrapper.appendChild(icon);
 
-    // Create title element.
     var titleWrapper = document.createElement('div');
     titleWrapper.classList.add('info-hotspot-title-wrapper');
     var title = document.createElement('div');
@@ -311,7 +298,6 @@
     title.innerHTML = hotspot.title;
     titleWrapper.appendChild(title);
 
-    // Create close element.
     var closeWrapper = document.createElement('div');
     closeWrapper.classList.add('info-hotspot-close-wrapper');
     var closeIcon = document.createElement('img');
@@ -319,21 +305,17 @@
     closeIcon.classList.add('info-hotspot-close-icon');
     closeWrapper.appendChild(closeIcon);
 
-    // Construct header element.
     header.appendChild(iconWrapper);
     header.appendChild(titleWrapper);
     header.appendChild(closeWrapper);
 
-    // Create text element.
     var text = document.createElement('div');
     text.classList.add('info-hotspot-text');
     text.innerHTML = hotspot.text;
 
-    // Place header and text into wrapper element.
     wrapper.appendChild(header);
     wrapper.appendChild(text);
 
-    // Create a modal for the hotspot content to appear on mobile mode.
     var modal = document.createElement('div');
     modal.innerHTML = wrapper.innerHTML;
     modal.classList.add('info-hotspot-modal');
@@ -344,20 +326,14 @@
       modal.classList.toggle('visible');
     };
 
-    // Show content when hotspot is clicked.
     wrapper.querySelector('.info-hotspot-header').addEventListener('click', toggle);
-
-    // Hide content when close icon is clicked.
     modal.querySelector('.info-hotspot-close-wrapper').addEventListener('click', toggle);
 
-    // Prevent touch and scroll events from reaching the parent element.
-    // This prevents the view control logic from interfering with the hotspot.
     stopTouchAndScrollEventPropagation(wrapper);
 
     return wrapper;
   }
 
-  // Prevent touch and scroll events from reaching the parent element.
   function stopTouchAndScrollEventPropagation(element, eventList) {
     var eventList = [ 'touchstart', 'touchmove', 'touchend', 'touchcancel',
                       'wheel', 'mousewheel' ];
@@ -389,121 +365,51 @@
   // Display the initial scene.
   switchScene(scenes[0]);
 
-  // ============================
-  // ZOOM (mejorado)
-  // - Prioriza los controladores nativos de Marzipano (ScrollZoomControlMethod / PinchZoomControlMethod).
-  // - Si no están disponibles, utiliza un fallback manual (wheel + pinch).
-  // ============================
-
-  // Límites de FOV (en radianes) — los limiters de cada view también pueden restringir más.
-  var MIN_FOV = 20 * Math.PI / 180;
-  var MAX_FOV = 120 * Math.PI / 180;
-
-  // 1) Intentar registrar los controladores nativos (preferido).
-  try {
-    if (Marzipano && Marzipano.ScrollZoomControlMethod) {
-      var scrollZoom = new Marzipano.ScrollZoomControlMethod(panoElement, { zoomDelta: 0.001, frictionTime: 0.08 });
-      controls.registerMethod('scrollZoom', scrollZoom, true);
-    }
-    if (Marzipano && Marzipano.PinchZoomControlMethod) {
-      // 'touch' es el tipo de puntero habitual para pinch en dispositivos móviles (Hammer.js).
-      var pinchZoom = new Marzipano.PinchZoomControlMethod(panoElement, 'touch', { zoomDelta: 0.001 });
-      controls.registerMethod('pinchZoom', pinchZoom, true);
-    }
-  } catch (e) {
-    // No crítico: seguimos con fallback abajo.
-    console.warn('No se pudieron registrar Scroll/Pinch zoom nativos de Marzipano:', e);
-  }
-
-  // 2) Fallback manual (solo se usa si la clase nativa no existe).
-  // Rueda del ratón: cambia fov y, si es posible, centra la vista en el punto del cursor.
+  // === ZOOM con rueda y pinch integrado ===
   panoElement.addEventListener('wheel', function (event) {
-    // Si el control nativo existe, que lo gestione (salimos).
-    if (Marzipano && Marzipano.ScrollZoomControlMethod) return;
     event.preventDefault();
+    var delta = event.deltaY;
+    var currentView = viewer.view();
+    var fov = currentView.fov();
 
-    var view = viewer.view();
-    if (!view) return;
-
-    var rect = panoElement.getBoundingClientRect();
-    var px = event.clientX - rect.left;
-    var py = event.clientY - rect.top;
-
-    // Obtener coordenadas del punto en yaw/pitch (puede devolver NaN si fuera de rango).
-    var coords = view.screenToCoordinates({ x: px, y: py });
-
-    // Sensibilidad: ajustar según prefieras.
-    var deltaFactor = event.deltaMode === 1 ? 15 : 1; // line mode -> scale up
-    var fovChange = event.deltaY * 0.0008 * deltaFactor; // positivo => alejar (increase fov)
-
-    var newFov = view.fov() + fovChange;
-    newFov = Math.max(Math.min(newFov, MAX_FOV), MIN_FOV);
-
-    // Si conseguimos coordenadas válidas, hacemos un lookTo inmediato para centrar zoom hacia el punto.
-    // Si coords.yaw es NaN (por ejemplo fuera del viewport), nos limitamos a cambiar el fov.
-    var sceneNow = viewer.scene();
-    if (coords && !isNaN(coords.yaw) && sceneNow && sceneNow.view()) {
-      sceneNow.lookTo({ yaw: coords.yaw, pitch: coords.pitch, fov: newFov }, { transitionDuration: 0 });
+    if (delta > 0) {
+      fov = Math.min(fov * 1.1, 120 * Math.PI / 180);
     } else {
-      // Fallback simple:
-      view.setFov(newFov);
+      fov = Math.max(fov / 1.1, 20 * Math.PI / 180);
     }
+    currentView.setFov(fov);
   }, { passive: false });
 
-  // Pinch manual (fallback) — detecta dos dedos y escala el fov.
-  var pinchStartDistance = null;
-  var pinchStartFov = null;
+  let pinchStartDistance = null;
+  let pinchStartFov = null;
 
   panoElement.addEventListener('touchstart', function (event) {
-    if (Marzipano && Marzipano.PinchZoomControlMethod) return;
-    if (event.touches && event.touches.length === 2) {
-      var dx = event.touches[0].clientX - event.touches[1].clientX;
-      var dy = event.touches[0].clientY - event.touches[1].clientY;
+    if (event.touches.length === 2) {
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
       pinchStartDistance = Math.sqrt(dx * dx + dy * dy);
-      var v = viewer.view();
-      pinchStartFov = v ? v.fov() : null;
+      pinchStartFov = viewer.view().fov();
     }
   }, { passive: false });
 
   panoElement.addEventListener('touchmove', function (event) {
-    if (Marzipano && Marzipano.PinchZoomControlMethod) return;
-    if (event.touches && event.touches.length === 2 && pinchStartDistance && pinchStartFov != null) {
+    if (event.touches.length === 2 && pinchStartDistance) {
       event.preventDefault();
-      var dx = event.touches[0].clientX - event.touches[1].clientX;
-      var dy = event.touches[0].clientY - event.touches[1].clientY;
-      var dist = Math.sqrt(dx * dx + dy * dy);
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const pinchDistance = Math.sqrt(dx * dx + dy * dy);
 
-      // scale < 1 => fingers separándose -> queremos reducir fov (zoom in)
-      var scale = pinchStartDistance / dist;
-      var newFov = pinchStartFov * scale;
-      newFov = Math.max(Math.min(newFov, MAX_FOV), MIN_FOV);
-
-      // Intentamos centrar en el punto medio entre los dedos
-      var rect = panoElement.getBoundingClientRect();
-      var midX = (event.touches[0].clientX + event.touches[1].clientX) / 2 - rect.left;
-      var midY = (event.touches[0].clientY + event.touches[1].clientY) / 2 - rect.top;
-
-      var view = viewer.view();
-      var coords = view ? view.screenToCoordinates({ x: midX, y: midY }) : null;
-      var sceneNow = viewer.scene();
-      if (coords && !isNaN(coords.yaw) && sceneNow) {
-        sceneNow.lookTo({ yaw: coords.yaw, pitch: coords.pitch, fov: newFov }, { transitionDuration: 0 });
-      } else if (view) {
-        view.setFov(newFov);
-      }
+      const scale = pinchStartDistance / pinchDistance;
+      let fov = pinchStartFov * scale;
+      fov = Math.max(Math.min(fov, 120 * Math.PI / 180), 20 * Math.PI / 180);
+      viewer.view().setFov(fov);
     }
   }, { passive: false });
 
   panoElement.addEventListener('touchend', function (event) {
-    if (Marzipano && Marzipano.PinchZoomControlMethod) return;
-    if (!event.touches || event.touches.length < 2) {
+    if (event.touches.length < 2) {
       pinchStartDistance = null;
-      pinchStartFov = null;
     }
   });
-
-  // ============================
-  // FIN ZOOM
-  // ============================
 
 })();
