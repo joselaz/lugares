@@ -23,16 +23,6 @@
 
   // Grab elements from DOM.
   var panoElement = document.querySelector('#pano');
-
-  // Ensure touch events reach the pano element (helps pinch in fullscreen)
-  try {
-    if (panoElement) {
-      panoElement.style.touchAction = 'none';
-      panoElement.style.msTouchAction = 'none';
-      panoElement.setAttribute('tabindex', '0');
-    }
-  } catch (e) {}
-
   var sceneNameElement = document.querySelector('#titleBar .sceneName');
   var sceneListElement = document.querySelector('#sceneList');
   var sceneElements = document.querySelectorAll('#sceneList .scene');
@@ -181,6 +171,89 @@
 
   // Associate view controls with elements.
   var controls = viewer.controls();
+
+
+  // === ZOOM mejorado (rueda + pinch) ===
+  panoElement.style.touchAction = 'none';
+  panoElement.style.msTouchAction = 'none';
+
+  var MIN_FOV = 20 * Math.PI / 180;
+  var MAX_FOV = 120 * Math.PI / 180;
+
+  function clampFov(fov) {
+    return Math.max(MIN_FOV, Math.min(MAX_FOV, fov));
+  }
+
+  function handleWheel(e) {
+    if (!panoElement.contains(e.target) && !(screenfull && screenfull.isFullscreen)) return;
+    e.preventDefault();
+    var view = viewer.view();
+    if (!view) return;
+    var delta = e.deltaY || -e.wheelDelta || 0;
+    var factor = (e.deltaMode === 1) ? 15 : 1;
+    var change = delta * 0.0008 * factor;
+    var newFov = view.fov() + change;
+    newFov = clampFov(newFov);
+    view.setFov(newFov);
+  }
+
+  panoElement.addEventListener('wheel', handleWheel, { passive: false });
+  document.addEventListener('wheel', handleWheel, { passive: false });
+
+  var pinchState = null;
+
+  function handleTouchStart(e) {
+    if (e.touches && e.touches.length === 2) {
+      var dx = e.touches[0].clientX - e.touches[1].clientX;
+      var dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchState = {
+        startDist: Math.sqrt(dx * dx + dy * dy),
+        startFov: viewer.view() ? viewer.view().fov() : null
+      };
+    }
+  }
+
+  function handleTouchMove(e) {
+    if (!(e.touches && e.touches.length === 2) || !pinchState || pinchState.startFov == null) return;
+    e.preventDefault();
+    var dx = e.touches[0].clientX - e.touches[1].clientX;
+    var dy = e.touches[0].clientY - e.touches[1].clientY;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    var scale = pinchState.startDist / dist;
+    var newFov = pinchState.startFov * scale;
+    newFov = clampFov(newFov);
+    viewer.view().setFov(newFov);
+  }
+
+  function handleTouchEnd(e) {
+    if (!e.touches || e.touches.length < 2) {
+      pinchState = null;
+    }
+  }
+
+  panoElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+  panoElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+  panoElement.addEventListener('touchend', handleTouchEnd, { passive: false });
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+  if (screenfull && screenfull.on) {
+    screenfull.on('change', function () {
+      if (screenfull.isFullscreen) {
+        try { panoElement.focus && panoElement.focus(); } catch (e) {}
+      }
+    });
+  }
+
+  // Intentar registrar pinch nativo si Hammer.js está cargado
+  if (typeof Hammer !== "undefined" && Marzipano.PinchZoomControlMethod) {
+    controls.registerMethod('pinch', new Marzipano.PinchZoomControlMethod(), true);
+  } else {
+    console.warn("Hammer.js no está cargado o método pinch no disponible");
+  }
+
+
   controls.registerMethod('upElement',    new Marzipano.ElementPressControlMethod(viewUpElement,     'y', -velocity, friction), true);
   controls.registerMethod('downElement',  new Marzipano.ElementPressControlMethod(viewDownElement,   'y',  velocity, friction), true);
   controls.registerMethod('leftElement',  new Marzipano.ElementPressControlMethod(viewLeftElement,   'x', -velocity, friction), true);
@@ -375,144 +448,50 @@
   // Display the initial scene.
   switchScene(scenes[0]);
 
-  
-  // OLD zoom block removed; replaced by improved handlers below.
+  // === ZOOM con rueda y pinch integrado ===
+  panoElement.addEventListener('wheel', function (event) {
+    event.preventDefault();
+    var delta = event.deltaY;
+    var currentView = viewer.view();
+    var fov = currentView.fov();
 
-// Ensure viewport meta for mobile (helps capture pinch on iOS)
-(function ensureViewportMeta(){
-  try {
-    var meta = document.querySelector('meta[name="viewport"]');
-    if (!meta) {
-      meta = document.createElement('meta');
-      meta.name = 'viewport';
-      meta.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no';
-      document.getElementsByTagName('head')[0].appendChild(meta);
+    if (delta > 0) {
+      fov = Math.min(fov * 1.1, 120 * Math.PI / 180);
+    } else {
+      fov = Math.max(fov / 1.1, 20 * Math.PI / 180);
     }
-  } catch (e) {}
+    currentView.setFov(fov);
+  }, { passive: false });
 
-// === ZOOM mejorado (rueda + pinch) ===
+  let pinchStartDistance = null;
+  let pinchStartFov = null;
 
-// Asegurarse de que #pano reciba eventos táctiles
-try {
-  if (panoElement) {
-    panoElement.style.touchAction = 'none';
-    panoElement.style.msTouchAction = 'none';
-    panoElement.setAttribute && panoElement.setAttribute('tabindex', '0');
-  }
-} catch(e) {}
-
-// Límites FOV
-var MIN_FOV = 20 * Math.PI / 180;
-var MAX_FOV = 120 * Math.PI / 180;
-
-function clampFov(fov) {
-  return Math.max(MIN_FOV, Math.min(MAX_FOV, fov));
-}
-
-// Intentar registrar controlador nativo de Marzipano si Hammer está disponible
-try {
-  if (typeof Hammer !== 'undefined' && Marzipano && Marzipano.PinchZoomControlMethod) {
-    try { controls.registerMethod('pinch', new Marzipano.PinchZoomControlMethod(), true); } catch(e) {}
-  }
-} catch(e) {}
-
-// --- WHEEL (rueda) ---
-function handleWheel(e) {
-  // Allow wheel when over panoElement or when fullscreen
-  if (!panoElement.contains(e.target) && !(screenfull && screenfull.isFullscreen)) return;
-  e.preventDefault();
-  var view = viewer.view();
-  if (!view) return;
-  var delta = e.deltaY || -e.wheelDelta || 0;
-  var factor = (e.deltaMode === 1) ? 15 : 1;
-  var change = delta * 0.0008 * factor;
-  var newFov = view.fov() + change;
-  newFov = clampFov(newFov);
-
-  var rect = panoElement.getBoundingClientRect();
-  var px = e.clientX - rect.left;
-  var py = e.clientY - rect.top;
-  var coords = null;
-  try {
-    coords = view.screenToCoordinates({ x: px, y: py });
-  } catch (err) {
-    coords = null;
-  }
-
-  var sceneNow = viewer.scene();
-  if (coords && !isNaN(coords.yaw) && sceneNow) {
-    sceneNow.lookTo({ yaw: coords.yaw, pitch: coords.pitch, fov: newFov }, { transitionDuration: 0 });
-  } else {
-    view.setFov(newFov);
-  }
-}
-
-panoElement.addEventListener('wheel', handleWheel, { passive: false });
-document.addEventListener('wheel', handleWheel, { passive: false });
-
-// --- PINCH (touch) ---
-var pinchState = null;
-
-function handleTouchStart(e) {
-  if (e.touches && e.touches.length === 2) {
-    var dx = e.touches[0].clientX - e.touches[1].clientX;
-    var dy = e.touches[0].clientY - e.touches[1].clientY;
-    pinchState = {
-      startDist: Math.sqrt(dx * dx + dy * dy),
-      startFov: viewer.view() ? viewer.view().fov() : null
-    };
-  }
-}
-
-function handleTouchMove(e) {
-  if (!(e.touches && e.touches.length === 2) || !pinchState || pinchState.startFov == null) return;
-  e.preventDefault();
-  var dx = e.touches[0].clientX - e.touches[1].clientX;
-  var dy = e.touches[0].clientY - e.touches[1].clientY;
-  var dist = Math.sqrt(dx * dx + dy * dy);
-  var scale = pinchState.startDist / dist;
-  var newFov = pinchState.startFov * scale;
-  newFov = clampFov(newFov);
-
-  var rect = panoElement.getBoundingClientRect();
-  var midX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
-  var midY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
-
-  var view = viewer.view();
-  var coords = null;
-  try {
-    coords = view.screenToCoordinates({ x: midX, y: midY });
-  } catch (err) {
-    coords = null;
-  }
-
-  var sceneNow = viewer.scene();
-  if (coords && !isNaN(coords.yaw) && sceneNow) {
-    sceneNow.lookTo({ yaw: coords.yaw, pitch: coords.pitch, fov: newFov }, { transitionDuration: 0 });
-  } else {
-    view.setFov(newFov);
-  }
-}
-
-function handleTouchEnd(e) {
-  if (!e.touches || e.touches.length < 2) {
-    pinchState = null;
-  }
-}
-
-panoElement.addEventListener('touchstart', handleTouchStart, { passive: false });
-panoElement.addEventListener('touchmove', handleTouchMove, { passive: false });
-panoElement.addEventListener('touchend', handleTouchEnd, { passive: false });
-document.addEventListener('touchstart', handleTouchStart, { passive: false });
-document.addEventListener('touchmove', handleTouchMove, { passive: false });
-document.addEventListener('touchend', handleTouchEnd, { passive: false });
-
-// Si usas screenfull, forzamos focus al entrar en fullscreen (ayuda a recibir eventos)
-if (screenfull && screenfull.on) {
-  screenfull.on('change', function () {
-    if (screenfull.isFullscreen) {
-      try { panoElement.focus && panoElement.focus(); } catch (e) {}
+  panoElement.addEventListener('touchstart', function (event) {
+    if (event.touches.length === 2) {
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      pinchStartDistance = Math.sqrt(dx * dx + dy * dy);
+      pinchStartFov = viewer.view().fov();
     }
+  }, { passive: false });
+
+  panoElement.addEventListener('touchmove', function (event) {
+    if (event.touches.length === 2 && pinchStartDistance) {
+      event.preventDefault();
+      const dx = event.touches[0].clientX - event.touches[1].clientX;
+      const dy = event.touches[0].clientY - event.touches[1].clientY;
+      const pinchDistance = Math.sqrt(dx * dx + dy * dy);
+
+      const scale = pinchStartDistance / pinchDistance;
+      let fov = pinchStartFov * scale;
+      fov = Math.max(Math.min(fov, 120 * Math.PI / 180), 20 * Math.PI / 180);
+      viewer.view().setFov(fov);
+    }
+  }, { passive: false });
+
+  panoElement.addEventListener('touchend', function (event) {
+    if (event.touches.length < 2) {
+      pinchStartDistance = null;
   });
-}
+
 })();
