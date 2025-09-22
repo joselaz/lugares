@@ -412,3 +412,108 @@
   }
 }, { passive: false });
 })();
+
+
+
+// === ZOOM mejorado (rueda + pinch) ===
+
+// Límites FOV
+var MIN_FOV = 20 * Math.PI / 180;
+var MAX_FOV = 120 * Math.PI / 180;
+
+function clampFov(fov) {
+  return Math.max(MIN_FOV, Math.min(MAX_FOV, fov));
+}
+
+// --- WHEEL (rueda) ---
+function handleWheel(e) {
+  if (!panoElement.contains(e.target) && !(screenfull && screenfull.isFullscreen)) return;
+  e.preventDefault();
+  var view = viewer.view();
+  if (!view) return;
+  var delta = e.deltaY || -e.wheelDelta || 0;
+  var factor = (e.deltaMode === 1) ? 15 : 1;
+  var change = delta * 0.0008 * factor;
+  var newFov = view.fov() + change;
+  newFov = clampFov(newFov);
+  var rect = panoElement.getBoundingClientRect();
+  var px = e.clientX - rect.left;
+  var py = e.clientY - rect.top;
+  var coords = null;
+  try {
+    coords = view.screenToCoordinates({ x: px, y: py });
+  } catch (err) {
+    coords = null;
+  }
+  var sceneNow = viewer.scene();
+  if (coords && !isNaN(coords.yaw) && sceneNow) {
+    sceneNow.lookTo({ yaw: coords.yaw, pitch: coords.pitch, fov: newFov }, { transitionDuration: 0 });
+  } else {
+    view.setFov(newFov);
+  }
+}
+
+panoElement.addEventListener('wheel', handleWheel, { passive: false });
+document.addEventListener('wheel', handleWheel, { passive: false });
+
+// --- PINCH (touch) ---
+var pinchState = null;
+
+function handleTouchStart(e) {
+  if (e.touches && e.touches.length === 2) {
+    var dx = e.touches[0].clientX - e.touches[1].clientX;
+    var dy = e.touches[0].clientY - e.touches[1].clientY;
+    pinchState = {
+      startDist: Math.sqrt(dx * dx + dy * dy),
+      startFov: viewer.view() ? viewer.view().fov() : null
+    };
+  }
+}
+
+function handleTouchMove(e) {
+  if (!(e.touches && e.touches.length === 2) || !pinchState || pinchState.startFov == null) return;
+  e.preventDefault();
+  var dx = e.touches[0].clientX - e.touches[1].clientX;
+  var dy = e.touches[0].clientY - e.touches[1].clientY;
+  var dist = Math.sqrt(dx * dx + dy * dy);
+  var scale = pinchState.startDist / dist;
+  var newFov = pinchState.startFov * scale;
+  newFov = clampFov(newFov);
+  var rect = panoElement.getBoundingClientRect();
+  var midX = ((e.touches[0].clientX + e.touches[1].clientX) / 2) - rect.left;
+  var midY = ((e.touches[0].clientY + e.touches[1].clientY) / 2) - rect.top;
+  var view = viewer.view();
+  var coords = null;
+  try {
+    coords = view.screenToCoordinates({ x: midX, y: midY });
+  } catch (err) {
+    coords = null;
+  }
+  var sceneNow = viewer.scene();
+  if (coords && !isNaN(coords.yaw) && sceneNow) {
+    sceneNow.lookTo({ yaw: coords.yaw, pitch: coords.pitch, fov: newFov }, { transitionDuration: 0 });
+  } else {
+    view.setFov(newFov);
+  }
+}
+
+function handleTouchEnd(e) {
+  if (!e.touches || e.touches.length < 2) {
+    pinchState = null;
+  }
+}
+
+panoElement.addEventListener('touchstart', handleTouchStart, { passive: false });
+panoElement.addEventListener('touchmove', handleTouchMove, { passive: false });
+panoElement.addEventListener('touchend', handleTouchEnd, { passive: false });
+document.addEventListener('touchstart', handleTouchStart, { passive: false });
+document.addEventListener('touchmove', handleTouchMove, { passive: false });
+document.addEventListener('touchend', handleTouchEnd, { passive: false });
+
+if (screenfull && screenfull.on) {
+  screenfull.on('change', function () {
+    if (screenfull.isFullscreen) {
+      try { panoElement.focus && panoElement.focus(); } catch (e) {}
+    }
+  });
+}
