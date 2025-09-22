@@ -171,8 +171,6 @@
 
   // Associate view controls with elements.
   var controls = viewer.controls();
-  controls.enableMethod('mouseWheel', true); // zoom con rueda
-  controls.enableMethod('pinch', true); // pinch zoom en móviles
   controls.registerMethod('upElement',    new Marzipano.ElementPressControlMethod(viewUpElement,     'y', -velocity, friction), true);
   controls.registerMethod('downElement',  new Marzipano.ElementPressControlMethod(viewDownElement,   'y',  velocity, friction), true);
   controls.registerMethod('leftElement',  new Marzipano.ElementPressControlMethod(viewLeftElement,   'x', -velocity, friction), true);
