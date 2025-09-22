@@ -60,28 +60,15 @@
     document.body.classList.add('tooltip-fallback');
   }
 
-  // MODIFICACIÓN 1: Viewer options mejoradas para zoom en fullscreen
+  // Viewer options.
   var viewerOpts = {
     controls: {
       mouseViewMode: data.settings.mouseViewMode
-    },
-    stage: {
-      preserveDrawingBuffer: true,
-      maxZoom: 3,    // Aumentar límite máximo de zoom
-      minZoom: 0.3   // Ajustar límite mínimo
     }
   };
 
   // Initialize viewer.
   var viewer = new Marzipano.Viewer(panoElement, viewerOpts);
-
-  // MODIFICACIÓN 2: Configurar opciones de zoom más sensibles
-  var controls = viewer.controls();
-  controls.setMethodOptions('zoom', {
-    zoomSpeed: 2.0,   // Aumentar velocidad del zoom
-    zoomInLimit: 3,   // Límite máximo coherente con stage
-    zoomOutLimit: 0.3 // Límite mínimo coherente con stage
-  });
 
   // Create scenes.
   var scenes = data.scenes.map(function(data) {
@@ -120,27 +107,6 @@
     };
   });
 
-  // MODIFICACIÓN 3: Función para manejar el cambio de fullscreen
-  function handleFullscreenChange() {
-    if (screenfull.isFullscreen) {
-      fullscreenToggleElement.classList.add('enabled');
-      // Actualizar tamaño del visor después de entrar en fullscreen
-      setTimeout(function() {
-        viewer.updateSize();
-        // Forzar actualización de controles de zoom
-        controls.updateMethod('zoom');
-        console.log('Visor actualizado en modo fullscreen');
-      }, 100);
-    } else {
-      fullscreenToggleElement.classList.remove('enabled');
-      // Actualizar también al salir de fullscreen
-      setTimeout(function() {
-        viewer.updateSize();
-        controls.updateMethod('zoom');
-      }, 50);
-    }
-  }
-
   // Set up autorotate, if enabled.
   var autorotate = Marzipano.autorotate({
     yawSpeed: 0.03,
@@ -154,36 +120,19 @@
   // Set handler for autorotate toggle.
   autorotateToggleElement.addEventListener('click', toggleAutorotate);
 
-  // MODIFICACIÓN 4: Configuración mejorada de fullscreen
+  // Set up fullscreen mode, if supported.
   if (screenfull.enabled && data.settings.fullscreenButton) {
     document.body.classList.add('fullscreen-enabled');
-    
-    // Listener para el botón de fullscreen
     fullscreenToggleElement.addEventListener('click', function() {
       screenfull.toggle();
     });
-    
-    // Listener para cambios de estado de fullscreen
-    if (screenfull.on) {
-      screenfull.on('change', handleFullscreenChange);
-    } else {
-      // Fallback para versiones antiguas de screenfull
-      document.addEventListener('fullscreenchange', handleFullscreenChange);
-      document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
-      document.addEventListener('mozfullscreenchange', handleFullscreenChange);
-      document.addEventListener('MSFullscreenChange', handleFullscreenChange);
-    }
-    
-    // MODIFICACIÓN 5: Listener adicional para redimensionamiento de ventana
-    window.addEventListener('resize', function() {
+    screenfull.on('change', function() {
       if (screenfull.isFullscreen) {
-        setTimeout(function() {
-          viewer.updateSize();
-          controls.updateMethod('zoom');
-        }, 50);
+        fullscreenToggleElement.classList.add('enabled');
+      } else {
+        fullscreenToggleElement.classList.remove('enabled');
       }
     });
-    
   } else {
     document.body.classList.add('fullscreen-disabled');
   }
@@ -220,16 +169,14 @@
   var velocity = 0.7;
   var friction = 3;
 
-  // MODIFICACIÓN 6: Aumentar velocidad específica para zoom
-  var zoomVelocity = 1.2; // Mayor velocidad para zoom
-
   // Associate view controls with elements.
+  var controls = viewer.controls();
   controls.registerMethod('upElement',    new Marzipano.ElementPressControlMethod(viewUpElement,     'y', -velocity, friction), true);
   controls.registerMethod('downElement',  new Marzipano.ElementPressControlMethod(viewDownElement,   'y',  velocity, friction), true);
   controls.registerMethod('leftElement',  new Marzipano.ElementPressControlMethod(viewLeftElement,   'x', -velocity, friction), true);
   controls.registerMethod('rightElement', new Marzipano.ElementPressControlMethod(viewRightElement,  'x',  velocity, friction), true);
-  controls.registerMethod('inElement',    new Marzipano.ElementPressControlMethod(viewInElement,  'zoom', -zoomVelocity, friction), true);
-  controls.registerMethod('outElement',   new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom',  zoomVelocity, friction), true);
+  controls.registerMethod('inElement',    new Marzipano.ElementPressControlMethod(viewInElement,  'zoom', -velocity, friction), true);
+  controls.registerMethod('outElement',   new Marzipano.ElementPressControlMethod(viewOutElement, 'zoom',  velocity, friction), true);
 
   function sanitize(s) {
     return s.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;');
@@ -242,11 +189,6 @@
     startAutorotate();
     updateSceneName(scene);
     updateSceneList(scene);
-    
-    // MODIFICACIÓN 7: Actualizar controles después de cambiar escena
-    setTimeout(function() {
-      controls.updateMethod('zoom');
-    }, 100);
   }
 
   function updateSceneName(scene) {
@@ -444,21 +386,7 @@
     return null;
   }
 
-  // MODIFICACIÓN 8: Función de debug para probar el zoom manualmente
-  function debugZoom() {
-    console.log('Debug Zoom - Probando funcionalidad...');
-    console.log('Controles disponibles:', Object.keys(controls.methods()));
-    console.log('Opciones de zoom:', controls.methodOptions('zoom'));
-  }
-
   // Display the initial scene.
   switchScene(scenes[0]);
-
-  // MODIFICACIÓN 9: Inicialización final para asegurar que todo funciona
-  setTimeout(function() {
-    console.log('Marzipano inicializado correctamente');
-    // Debug opcional - descomenta si necesitas probar
-    // debugZoom();
-  }, 500);
 
 })();
