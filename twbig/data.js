@@ -54,11 +54,8 @@ var APP_DATA = {
           "pitch": -0.1439958515345161,
           "title": "caseta de comunicaciones mas movil panama",
           "text": "<div><font dir=\"auto\" style=\"vertical-align: inherit;\"><font dir=\"auto\" style=\"vertical-align: inherit;\">en este sitio lo que indica el plano es el lugar donde estuvo la primera antena que ya no existe en el sitio</font></font></div><div><font dir=\"auto\" style=\"vertical-align: inherit;\"><font dir=\"auto\" style=\"vertical-align: inherit;\">según el plano donde está ubicado la caseta está ubicado en el lote 1&nbsp;</font></font>
-<body>
     <h1>planos</h1>
     <img src="https://joselaz.github.io/lugares/twbig/galeria/image003.jpg" alt="plano"width="400" height="300">
-</body>
-
 </div>"
         },
         {
