@@ -3,459 +3,317 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Explora nuestros tours virtuales en 360° elaborados por Jose Lazo. Descubre lugares increíbles desde la comodidad de tu hogar.">
-  <title>Tour Virtual | Explora espacios en 360°</title>
+  <meta name="description" content="Explora nuestros tours virtuales en 360° elaborados por Jose Lazo.">
+  <title>Tour Virtual 360° | Jose Lazo</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     :root {
-      --primary-color: #4CAF50;
-      --secondary-color: #333;
-      --accent-color: #FF9800;
-      --light-color: #f8f9fa;
-      --dark-color: #212529;
-      --shadow: 0 4px 6px rgba(0,0,0,0.1);
-      --transition: all 0.3s ease;
+      --primary-color: #00c853; 
+      --secondary-color: #121212;
+      --accent-color: #00e5ff;
+      --text-light: #ffffff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
-    
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
+      color: #e0e0e0;
       line-height: 1.6;
-      color: var(--dark-color);
-      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      overflow-x: hidden;
+      scroll-behavior: smooth;
     }
-    
-    /* Header */
-    header {
-      background: linear-gradient(to right, var(--primary-color), #45a049);
-      color: white;
-      padding: 2rem 1rem;
-      text-align: center;
-      box-shadow: var(--shadow);
-      position: relative;
-      overflow: hidden;
-    }
-    
-    header::before {
+
+    /* Fondo animado sutil */
+    body::before {
       content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
+      z-index: -1;
+    }
+
+    /* Header con Antenas Parabólicas en el Bosque */
+    header {
+      height: 75vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      /* Imagen de antenas parabólicas/satelitales en entorno natural */
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.8)), 
+                  url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=2000');
       background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      clip-path: polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%);
+      position: relative;
     }
-    
+
     header h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      position: relative;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 0 5px 25px rgba(0,0,0,0.9);
+      margin-bottom: 1rem;
+      animation: fadeInDown 1s ease;
+      color: white;
     }
-    
+
     header p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      position: relative;
+      background: var(--primary-color);
+      color: black;
+      padding: 10px 30px;
+      border-radius: 50px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      animation: fadeInUp 1s ease;
+      box-shadow: 0 10px 20px rgba(0, 200, 83, 0.4);
     }
-    
-    /* Navigation */
+
+    /* Navbar Glassmorphism */
     nav {
-      background: var(--secondary-color);
+      background: rgba(10, 10, 10, 0.85);
+      backdrop-filter: blur(15px);
       position: sticky;
       top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow);
+      z-index: 1000;
+      border-bottom: 1px solid var(--glass-border);
     }
-    
+
     .nav-container {
       max-width: 1200px;
       margin: 0 auto;
       display: flex;
       justify-content: center;
+      gap: 15px;
     }
-    
+
     nav a {
-      color: #f2f2f2;
-      text-align: center;
-      padding: 1rem 1.5rem;
-      text-decoration: none;
-      transition: var(--transition);
-      position: relative;
-      font-weight: 500;
-    }
-    
-    nav a:hover {
-      background-color: rgba(255,255,255,0.1);
       color: white;
-    }
-    
-    nav a::after {
-      content: '';
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      width: 0;
-      height: 3px;
-      background: var(--accent-color);
+      padding: 1.2rem;
+      text-decoration: none;
+      font-weight: 600;
       transition: var(--transition);
-      transform: translateX(-50%);
-    }
-    
-    nav a:hover::after {
-      width: 80%;
-    }
-    
-    /* Main Content */
-    main {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 2rem 1rem;
-    }
-    
-    section {
-      margin-bottom: 3rem;
-      background: white;
-      border-radius: 10px;
-      padding: 2rem;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-    }
-    
-    section:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-    }
-    
-    h2 {
-      color: var(--primary-color);
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #eee;
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
     }
-    
-    h2 i {
+
+    nav a:hover {
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    /* Secciones */
+    main { max-width: 1200px; margin: -50px auto 0; padding: 0 20px; }
+
+    section {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 4rem 2rem;
+      margin-bottom: 4rem;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 2.5rem;
       color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
     }
-    
-    /* Tours Section */
+
+    /* Grid de Tours */
     .tour-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 2rem;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
     }
-    
+
     .tour {
-      background: white;
-      border-radius: 10px;
+      background: #1a1a1a;
+      border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      border: 1px solid #333;
       transition: var(--transition);
-      position: relative;
     }
-    
+
     .tour:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+      transform: translateY(-12px);
+      border-color: var(--primary-color);
+      box-shadow: 0 20px 40px rgba(0, 200, 83, 0.25);
     }
-    
+
     .tour iframe {
       width: 100%;
-      height: 220px;
+      height: 300px;
       border: none;
-      display: block;
     }
-    
+
     .tour h3 {
-      padding: 1rem;
-      text-align: center;
-      background: var(--light-color);
-      margin: 0;
+      padding: 1.5rem;
       font-size: 1.2rem;
-    }
-    
-    .tour-badge {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: var(--accent-color);
-      color: white;
-      padding: 5px 10px;
-      border-radius: 20px;
-      font-size: 0.8rem;
-      font-weight: bold;
-    }
-    
-    /* Contact Section */
-    .contact-info {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 2rem;
-      justify-content: center;
-    }
-    
-    .contact-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 1rem;
-      background: var(--light-color);
-      border-radius: 8px;
-      transition: var(--transition);
-    }
-    
-    .contact-item:hover {
-      background: #e9ecef;
-      transform: translateX(5px);
-    }
-    
-    .contact-item i {
-      color: var(--primary-color);
-      font-size: 1.5rem;
-    }
-    
-    /* Footer */
-    footer {
-      background: var(--secondary-color);
-      color: white;
       text-align: center;
-      padding: 2rem 1rem;
-      margin-top: 3rem;
-    }
-    
-    .social-links {
-      margin-bottom: 1rem;
-    }
-    
-    .social-links a {
+      background: #1a1a1a;
       color: white;
-      font-size: 1.5rem;
-      margin: 0 10px;
+    }
+
+    /* Contacto */
+    .contact-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+    }
+
+    .contact-item {
+      background: rgba(255,255,255,0.03);
+      padding: 35px;
+      border-radius: 25px;
+      text-align: center;
+      border: 1px solid var(--glass-border);
       transition: var(--transition);
     }
-    
-    .social-links a:hover {
-      color: var(--accent-color);
-      transform: translateY(-3px);
+
+    .contact-item:hover {
+      border-color: var(--primary-color);
+      background: rgba(0, 200, 83, 0.05);
+      transform: scale(1.05);
     }
-    
-    /* Back to top button */
-    .back-to-top {
+
+    .contact-item i {
+      font-size: 3rem;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+    }
+
+    .whatsapp-float {
       position: fixed;
       bottom: 30px;
       right: 30px;
-      background: var(--primary-color);
+      background: #25d366;
       color: white;
-      width: 50px;
-      height: 50px;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       display: flex;
-      align-items: center;
       justify-content: center;
-      font-size: 1.5rem;
-      box-shadow: var(--shadow);
-      cursor: pointer;
-      opacity: 0;
-      visibility: hidden;
+      align-items: center;
+      font-size: 40px;
+      z-index: 2000;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
       transition: var(--transition);
-      z-index: 99;
     }
-    
-    .back-to-top.show {
-      opacity: 1;
-      visibility: visible;
+
+    .whatsapp-float:hover { transform: scale(1.1) rotate(15deg); }
+
+    /* Animaciones */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    
-    .back-to-top:hover {
-      background: #45a049;
-      transform: translateY(-5px);
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    
-    /* Responsive Design */
+
     @media (max-width: 768px) {
-      header h1 {
-        font-size: 2rem;
-      }
-      
-      .nav-container {
-        flex-direction: column;
-      }
-      
-      nav a {
-        padding: 0.8rem 1rem;
-      }
-      
-      .tour-container {
-        grid-template-columns: 1fr;
-      }
-      
-      section {
-        padding: 1.5rem;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      header {
-        padding: 1.5rem 1rem;
-      }
-      
-      header h1 {
-        font-size: 1.8rem;
-      }
-      
-      section {
-        padding: 1rem;
-      }
+      header { height: 50vh; }
+      .tour-container { grid-template-columns: 1fr; }
+      section { padding: 2.5rem 1.5rem; }
+      header h1 { font-size: 2.2rem; }
     }
   </style>
 </head>
 <body>
 
+  <a href="https://wa.me/50764739133" class="whatsapp-float" target="_blank" title="Contáctame ahora">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
   <header>
-    <h1><i class="fas fa-vr-cardboard"></i> Tours Virtuales 360°</h1>
-    <p>Explora nuestros espacios en inmersión total - Elaborado por Jose Lazo</p>
+    <h1><i class="fas fa-satellite-dish"></i> TOUR 360°</h1>
+    <p>Ingeniería y Tours por Jose Lazo</p>
   </header>
 
   <nav>
     <div class="nav-container">
-      <a href="#inicio"><i class="fas fa-home"></i> Inicio</a>
-      <a href="#tours"><i class="fas fa-binoculars"></i> Tours</a>
-      <a href="#contacto"><i class="fas fa-envelope"></i> Contacto</a>
+      <a href="#inicio">Inicio</a>
+      <a href="#tours">Proyectos</a>
+      <a href="#contacto">Contacto</a>
     </div>
   </nav>
 
   <main>
     <section id="inicio">
-      <h2><i class="fas fa-door-open"></i> Bienvenido</h2>
-      <p>Sumérgete en experiencias únicas con nuestros tours virtuales en 360°. Explora lugares increíbles desde la comodidad de tu dispositivo, con una calidad visual excepcional y navegación intuitiva.</p>
-      <p>Nuestros tours han sido cuidadosamente elaborados por <strong>Jose Lazo</strong> utilizando tecnología de vanguardia para ofrecerte la mejor experiencia inmersiva.</p>
+      <h2><i class="fas fa-broadcast-tower"></i> Conectando Experiencias</h2>
+      <p style="font-size: 1.25rem; color: #ccc; max-width: 900px;">
+        Especialista en la creación de entornos virtuales inmersivos de alta precisión. Desde torres de telecomunicaciones hasta paisajes naturales, permitimos que el mundo explore tu infraestructura sin límites geográficos.
+      </p>
     </section>
 
     <section id="tours">
-      <h2><i class="fas fa-map-marked-alt"></i> Tours Virtuales Disponibles</h2>
+      <h2><i class="fas fa-vr-cardboard"></i> Proyectos Realizados</h2>
       <div class="tour-container">
         <div class="tour">
           <iframe src="https://joselaz.github.io/lugares/barranco-adentro/index.html" allowfullscreen loading="lazy"></iframe>
-          <h3>Tour Barranco Adentro</h3>
+          <h3>Barranco Adentro</h3>
         </div>
         <div class="tour">
           <iframe src="https://joselaz.github.io/lugares/cerro-tapado/index.html" allowfullscreen loading="lazy"></iframe>
-          <h3>Tour Cerro Tapado</h3>
+          <h3>Cerro Tapado</h3>
         </div>
         <div class="tour">
           <iframe src="https://joselaz.github.io/lugares/bigcreek/index.html" allowfullscreen loading="lazy"></iframe>
-          <h3>Tour BigCreeK</h3>
+          <h3>Big Creek</h3>
         </div>
         <div class="tour">
           <iframe src="https://joselaz.github.io/lugares/Fca6TWmasmovil/index.html" allowfullscreen loading="lazy"></iframe>
-          <h3>Tour Finca 6 Torre +movil </h3>
+          <h3>Finca 6 Torre +móvil</h3>
         </div>
-<div class="tour">
-          <iframe src="https://joselaz.github.io/lugares/twbig/index.html" allowfullscreen loading="lazy"></iframe>
-          <h3>Tour BigcreeK2 </h3>
-        </div>
-
-
-
-
- <!-- Espacio para futuros tours -->
         <div class="tour">
-          <div style="width:100%;height:220px;background:#f0f0f0;display:flex;align-items:center;justify-content:center;">
-            <i class="fas fa-plus" style="font-size:3rem;color:#ccc;"></i>
-          </div>
-          <h3>Próximamente</h3>
+          <iframe src="https://joselaz.github.io/lugares/twbig/index.html" allowfullscreen loading="lazy"></iframe>
+          <h3>Big Creek II</h3>
+        </div>
+        <div class="tour" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 350px; border: 3px dashed #333; background: rgba(255,255,255,0.02);">
+            <i class="fas fa-signal" style="font-size: 3.5rem; color: #444; margin-bottom: 20px;"></i>
+            <h3 style="background: transparent; color: #555;">Siguiente Estación en Proceso</h3>
         </div>
       </div>
     </section>
 
     <section id="contacto">
-      <h2><i class="fas fa-address-card"></i> Contacto</h2>
-      <p>¿Tienes preguntas o necesitas un tour virtual personalizado? No dudes en contactarme:</p>
+      <h2><i class="fas fa-satellite"></i> Enlace Directo</h2>
       <div class="contact-info">
         <div class="contact-item">
-          <i class="fas fa-mobile-alt"></i>
-          <div>
-            <strong>Celular:</strong><br>
-            00-507-6473-9133
-          </div>
+          <i class="fas fa-phone-volume"></i>
+          <p><strong>Llamadas / WhatsApp</strong><br>+507 6473-9133</p>
         </div>
         <div class="contact-item">
           <i class="fas fa-envelope"></i>
-          <div>
-            <strong>E-mail:</strong><br>
-            joselazo2@gmail.com
-          </div>
+          <p><strong>Email Profesional</strong><br>joselazo2@gmail.com</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="social-links">
-      <a href="#"><i class="fab fa-facebook"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-linkedin"></i></a>
-      <a href="#"><i class="fab fa-youtube"></i></a>
-    </div>
-    <p>&copy; 2025 Ing. Jose Lazo - Todos los derechos reservados</p>
+  <footer style="text-align: center; padding: 5rem 0; border-top: 1px solid #222; margin-top: 2rem;">
+    <p style="opacity: 0.4; font-size: 0.9rem; letter-spacing: 1px;">&copy; 2026 Ing. Jose Lazo | Bocas del Toro, Panamá</p>
   </footer>
 
-  <div class="back-to-top" id="backToTop">
-    <i class="fas fa-chevron-up"></i>
-  </div>
-
-  <script>
-    // Smooth scrolling para enlaces de navegación
-    document.querySelectorAll('nav a').forEach(anchor => {
-      anchor.addEventListener('click', function(e) {
-        e.preventDefault();
-        const targetId = this.getAttribute('href');
-        const targetElement = document.querySelector(targetId);
-        
-        window.scrollTo({
-          top: targetElement.offsetTop - 20,
-          behavior: 'smooth'
-        });
-      });
-    });
-    
-    // Botón "Volver arriba"
-    const backToTopButton = document.getElementById('backToTop');
-    
-    window.addEventListener('scroll', () => {
-      if (window.pageYOffset > 300) {
-        backToTopButton.classList.add('show');
-      } else {
-        backToTopButton.classList.remove('show');
-      }
-    });
-    
-    backToTopButton.addEventListener('click', () => {
-      window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-      });
-    });
-    
-    // Efecto de carga para iframes (simulado)
-    document.querySelectorAll('.tour iframe').forEach(iframe => {
-      iframe.addEventListener('load', function() {
-        this.style.opacity = '1';
-      });
-      
-      iframe.style.opacity = '0';
-      iframe.style.transition = 'opacity 0.5s ease';
-    });
-  </script>
-
 </body>
-
 </html>
