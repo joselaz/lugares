@@ -2,90 +2,90 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-  <meta name="description" content="Tours virtuales 360° de alta ingeniería por Jose Lazo.">
-  <title>Jose Lazo | 🥽 360°</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Explora nuestros tours virtuales en 360° elaborados por Jose Lazo.">
+  <title>Tour Virtual 360° | Jose Lazo</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@300;500;700&display=swap');
-
     :root {
-      --primary: #00c853; 
-      --accent: #00e5ff;
-      --bg: #020406;
-      --card-bg: rgba(10, 15, 20, 0.9);
-      --glow: rgba(0, 200, 83, 0.3);
+      --primary-color: #00c853; 
+      --secondary-color: #121212;
+      --accent-color: #00e5ff;
+      --text-light: #ffffff;
+      --glass: rgba(255, 255, 255, 0.05);
+      --glass-border: rgba(255, 255, 255, 0.1);
+      --transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
-      background-color: var(--bg);
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background-color: #0a0a0a;
       color: #e0e0e0;
-      font-family: 'Rajdhani', sans-serif;
+      line-height: 1.6;
       overflow-x: hidden;
       scroll-behavior: smooth;
     }
 
-    /* Fondo de malla tecnológica */
-    .bg-grid {
+    /* Fondo animado sutil */
+    body::before {
+      content: "";
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background-image: linear-gradient(rgba(0, 200, 83, 0.05) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(0, 200, 83, 0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
+      background: radial-gradient(circle at 50% 50%, #1a1a1a 0%, #000 100%);
       z-index: -1;
-      mask-image: radial-gradient(circle, black, transparent 90%);
     }
 
-    /* Header Impactante */
+    /* Header con Antenas Parabólicas en el Bosque */
     header {
-      height: 85vh;
+      height: 75vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      background: linear-gradient(to bottom, rgba(2,4,6,0.3), var(--bg)),
-                  url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=1500');
+      text-align: center;
+      /* Imagen de antenas parabólicas/satelitales en entorno natural */
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.8)), 
+                  url('https://images.unsplash.com/photo-1446776811953-b23d57bd21aa?auto=format&fit=crop&q=80&w=2000');
       background-size: cover;
       background-position: center;
       background-attachment: fixed;
-      text-align: center;
-      padding: 20px;
+      clip-path: polygon(0 0, 100% 0, 100% 90%, 50% 100%, 0 90%);
+      position: relative;
     }
 
     header h1 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(2rem, 9vw, 5rem);
-      letter-spacing: clamp(4px, 2vw, 10px);
-      color: #fff;
-      text-shadow: 0 0 25px var(--glow);
-      margin-bottom: 20px;
+      font-size: clamp(2.5rem, 8vw, 4.5rem);
       text-transform: uppercase;
-      line-height: 1.1;
+      letter-spacing: 4px;
+      text-shadow: 0 5px 25px rgba(0,0,0,0.9);
+      margin-bottom: 1rem;
+      animation: fadeInDown 1s ease;
+      color: white;
     }
 
     header p {
-      font-family: 'Orbitron', sans-serif;
-      background: rgba(0, 0, 0, 0.8);
-      border: 1px solid var(--primary);
-      color: var(--primary);
-      padding: 10px 25px;
-      letter-spacing: 2px;
-      font-size: clamp(0.7rem, 2vw, 1rem);
-      box-shadow: 0 0 20px var(--glow);
-      clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%);
+      background: var(--primary-color);
+      color: black;
+      padding: 10px 30px;
+      border-radius: 50px;
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      animation: fadeInUp 1s ease;
+      box-shadow: 0 10px 20px rgba(0, 200, 83, 0.4);
     }
 
-    /* Navbar Moderno con soporte para scroll móvil */
+    /* Navbar Glassmorphism */
     nav {
-      background: rgba(2, 4, 6, 0.95);
+      background: rgba(10, 10, 10, 0.85);
       backdrop-filter: blur(15px);
-      -webkit-backdrop-filter: blur(15px);
       position: sticky;
       top: 0;
       z-index: 1000;
-      border-bottom: 1px solid rgba(0, 200, 83, 0.2);
+      border-bottom: 1px solid var(--glass-border);
     }
 
     .nav-container {
@@ -93,241 +93,228 @@
       margin: 0 auto;
       display: flex;
       justify-content: center;
-      overflow-x: auto; /* Permite scroll si el menú es largo en móviles */
-    }
-
-    nav a {
-      color: #fff;
-      padding: 18px 20px;
-      text-decoration: none;
-      font-size: 0.8rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: 0.3s;
-      white-space: nowrap;
-    }
-
-    nav a:hover { color: var(--accent); }
-
-    /* Secciones */
-    main { max-width: 1200px; margin: 0 auto; padding: 20px; }
-
-    section {
-      padding: clamp(40px, 8vw, 80px) clamp(20px, 5vw, 40px);
-      margin-bottom: 40px;
-      background: var(--card-bg);
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 4px;
-      position: relative;
-    }
-
-    section::before {
-      content: ''; position: absolute; top: -1px; left: -1px; width: 30px; height: 30px;
-      border-top: 2px solid var(--primary); border-left: 2px solid var(--primary);
-    }
-
-    h2 {
-      font-family: 'Orbitron', sans-serif;
-      font-size: clamp(1.2rem, 4vw, 1.8rem);
-      color: var(--primary);
-      margin-bottom: 35px;
-      display: flex;
-      align-items: center;
       gap: 15px;
     }
 
-    /* Grid de Proyectos Estilo Sci-Fi */
-    .tour-grid {
+    nav a {
+      color: white;
+      padding: 1.2rem;
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    nav a:hover {
+      color: var(--primary-color);
+      transform: translateY(-2px);
+    }
+
+    /* Secciones */
+    main { max-width: 1200px; margin: -50px auto 0; padding: 0 20px; }
+
+    section {
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--glass-border);
+      border-radius: 30px;
+      padding: 4rem 2rem;
+      margin-bottom: 4rem;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.6);
+    }
+
+    h2 {
+      font-size: 2.2rem;
+      margin-bottom: 2.5rem;
+      color: var(--accent-color);
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Grid de Tours */
+    .tour-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 25px;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 30px;
     }
 
-    .tour-card {
-      background: #000;
-      border: 1px solid #1a1a1a;
-      transition: all 0.4s ease;
-      border-radius: 8px;
+    .tour {
+      background: #1a1a1a;
+      border-radius: 20px;
       overflow: hidden;
+      border: 1px solid #333;
+      transition: var(--transition);
     }
 
-    .tour-card:hover {
-      border-color: var(--accent);
-      box-shadow: 0 0 30px rgba(0, 229, 255, 0.15);
+    .tour:hover {
+      transform: translateY(-12px);
+      border-color: var(--primary-color);
+      box-shadow: 0 20px 40px rgba(0, 200, 83, 0.25);
     }
 
-    .iframe-container {
-      position: relative;
+    .tour iframe {
       width: 100%;
       height: 300px;
-      background: #050505;
-    }
-
-    .tour-card iframe {
-      width: 100%;
-      height: 100%;
       border: none;
     }
 
-    .tour-card h3 {
-      padding: 15px;
-      background: #0a0a0a;
+    .tour h3 {
+      padding: 1.5rem;
+      font-size: 1.2rem;
       text-align: center;
-      font-family: 'Orbitron', sans-serif;
-      font-size: 0.9rem;
-      letter-spacing: 1px;
-      color: #fff;
+      background: #1a1a1a;
+      color: white;
     }
 
-    /* Contacto Profesional - Layout adaptable */
-    .contact-wrapper {
+    /* Contacto */
+    .contact-info {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
     }
 
-    .contact-box {
-      padding: 30px;
-      border: 1px solid rgba(255,255,255,0.05);
-      background: rgba(255,255,255,0.02);
-      transition: 0.3s;
+    .contact-item {
+      background: rgba(255,255,255,0.03);
+      padding: 35px;
+      border-radius: 25px;
       text-align: center;
-      text-decoration: none;
-      color: inherit;
-      border-radius: 8px;
+      border: 1px solid var(--glass-border);
+      transition: var(--transition);
     }
 
-    .contact-box:hover {
+    .contact-item:hover {
+      border-color: var(--primary-color);
       background: rgba(0, 200, 83, 0.05);
-      border-color: var(--primary);
+      transform: scale(1.05);
     }
 
-    .contact-box i {
-      font-size: 2.5rem;
-      color: var(--primary);
+    .contact-item i {
+      font-size: 3rem;
+      color: var(--primary-color);
       margin-bottom: 15px;
-      text-shadow: 0 0 10px var(--glow);
     }
 
-    /* WhatsApp Flotante Optimizado para Pulgar */
-    .wa-float {
+    .whatsapp-float {
       position: fixed;
-      bottom: 25px;
-      right: 25px;
+      bottom: 30px;
+      right: 30px;
       background: #25d366;
-      width: 60px;
-      height: 60px;
+      color: white;
+      width: 70px;
+      height: 70px;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 30px;
-      color: white;
+      font-size: 40px;
       z-index: 2000;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-      transition: 0.3s;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+      transition: var(--transition);
     }
 
-    @media (max-width: 480px) {
-      header { height: 60vh; }
-      .wa-float { width: 50px; height: 50px; font-size: 25px; bottom: 15px; right: 15px; }
-      nav a { padding: 15px 12px; font-size: 0.7rem; }
-      section { padding: 30px 15px; }
+    .whatsapp-float:hover { transform: scale(1.1) rotate(15deg); }
+
+    /* Animaciones */
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Estilo para el scrollbar */
-    ::-webkit-scrollbar { width: 8px; }
-    ::-webkit-scrollbar-track { background: #020406; }
-    ::-webkit-scrollbar-thumb { background: #1a1a1a; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+    @media (max-width: 768px) {
+      header { height: 50vh; }
+      .tour-container { grid-template-columns: 1fr; }
+      section { padding: 2.5rem 1.5rem; }
+      header h1 { font-size: 2.2rem; }
+    }
   </style>
 </head>
 <body>
 
-  <div class="bg-grid"></div>
-
-  <a href="https://wa.me/50764739133" class="wa-float" target="_blank" aria-label="WhatsApp">
+  <a href="https://wa.me/50764739133" class="whatsapp-float" target="_blank" title="Contáctame ahora">
     <i class="fab fa-whatsapp"></i>
   </a>
 
   <header>
-    <h1>🥽 360</h1>
-    <p>INGENIERÍA VIRTUAL | JOSE LAZO</p>
+    <h1><i class="fas fa-satellite-dish"></i> TOUR 360°</h1>
+    <p>Ingeniería y Tours por Jose Lazo</p>
   </header>
 
   <nav>
     <div class="nav-container">
-      <a href="#inicio">INICIO</a>
-      <a href="#tours">PROYECTOS</a>
-      <a href="#contacto">CONTACTO</a>
+      <a href="#inicio">Inicio</a>
+      <a href="#tours">Proyectos</a>
+      <a href="#contacto">Contacto</a>
     </div>
   </nav>
 
   <main>
     <section id="inicio">
-      <h2><i class="fas fa-microchip"></i> INFRAESTRUCTURA DIGITAL</h2>
-      <p style="font-size: clamp(1rem, 3vw, 1.25rem); font-weight: 300; color: #bbb; line-height: 1.7;">
-        Especialista en captura inmersiva y digitalización de activos. Proporciono soluciones visuales 360° de alta precisión para inspección técnica y monitoreo de infraestructura en entornos críticos.
+      <h2><i class="fas fa-broadcast-tower"></i> Conectando Experiencias</h2>
+      <p style="font-size: 1.25rem; color: #ccc; max-width: 900px;">
+        Especialista en la creación de entornos virtuales inmersivos de alta precisión. Desde torres de telecomunicaciones hasta paisajes naturales, permitimos que el mundo explore tu infraestructura sin límites geográficos.
       </p>
     </section>
 
     <section id="tours">
-      <h2><i class="fas fa-project-diagram"></i> NODOS ACTIVOS</h2>
-      <div class="tour-grid">
-        <div class="tour-card">
-          <div class="iframe-container">
-            <iframe src="https://joselaz.github.io/lugares/barranco-adentro/index.html" loading="lazy"></iframe>
-          </div>
-          <h3>BARRANCO ADENTRO</h3>
+      <h2><i class="fas fa-vr-cardboard"></i> Proyectos Realizados</h2>
+      <div class="tour-container">
+        <div class="tour">
+          <iframe src="https://joselaz.github.io/lugares/barranco-adentro/index.html" allowfullscreen loading="lazy"></iframe>
+          <h3>Barranco Adentro</h3>
         </div>
-        <div class="tour-card">
-          <div class="iframe-container">
-            <iframe src="https://joselaz.github.io/lugares/cerro-tapado/index.html" loading="lazy"></iframe>
-          </div>
-          <h3>CERRO TAPADO</h3>
+        <div class="tour">
+          <iframe src="https://joselaz.github.io/lugares/cerro-tapado/index.html" allowfullscreen loading="lazy"></iframe>
+          <h3>Cerro Tapado</h3>
         </div>
-        <div class="tour-card">
-          <div class="iframe-container">
-            <iframe src="https://joselaz.github.io/lugares/bigcreek/index.html" loading="lazy"></iframe>
-          </div>
-          <h3>BIG CREEK</h3>
+        <div class="tour">
+          <iframe src="https://joselaz.github.io/lugares/bigcreek/index.html" allowfullscreen loading="lazy"></iframe>
+          <h3>Big Creek</h3>
         </div>
-        <div class="tour-card">
-          <div class="iframe-container">
-            <iframe src="https://joselaz.github.io/lugares/Fca6TWmasmovil/index.html" loading="lazy"></iframe>
-          </div>
-          <h3>FINCA 6 [+MÓVIL]</h3>
+        <div class="tour">
+          <iframe src="https://joselaz.github.io/lugares/Fca6TWmasmovil/index.html" allowfullscreen loading="lazy"></iframe>
+          <h3>Finca 6 Torre +móvil</h3>
+        </div>
+        <div class="tour">
+          <iframe src="https://joselaz.github.io/lugares/twbig/index.html" allowfullscreen loading="lazy"></iframe>
+          <h3>Big Creek II</h3>
+        </div>
+        <div class="tour" style="display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 350px; border: 3px dashed #333; background: rgba(255,255,255,0.02);">
+            <i class="fas fa-signal" style="font-size: 3.5rem; color: #444; margin-bottom: 20px;"></i>
+            <h3 style="background: transparent; color: #555;">Siguiente Estación en Proceso</h3>
         </div>
       </div>
     </section>
 
     <section id="contacto">
-      <h2><i class="fas fa-terminal"></i> ENLACE DE DATOS</h2>
-      <div class="contact-wrapper">
-        <a href="tel:+50764739133" class="contact-box">
-          <i class="fas fa-phone-alt"></i>
-          <h4 style="letter-spacing: 2px; margin-bottom: 5px;">TELÉFONO</h4>
-          <p>+507 6473-9133</p>
-        </a>
-        <a href="mailto:joselazo2@gmail.com" class="contact-box">
+      <h2><i class="fas fa-satellite"></i> Enlace Directo</h2>
+      <div class="contact-info">
+        <div class="contact-item">
+          <i class="fas fa-phone-volume"></i>
+          <p><strong>Llamadas / WhatsApp</strong><br>+507 6473-9133</p>
+        </div>
+        <div class="contact-item">
           <i class="fas fa-envelope"></i>
-          <h4 style="letter-spacing: 2px; margin-bottom: 5px;">EMAIL</h4>
-          <p>joselazo2@gmail.com</p>
-        </a>
-        <div class="contact-box">
-          <i class="fas fa-map-marker-alt"></i>
-          <h4 style="letter-spacing: 2px; margin-bottom: 5px;">UBICACIÓN</h4>
-          <p>Bocas del Toro, Panamá</p>
+          <p><strong>Email Profesional</strong><br>joselazo2@gmail.com</p>
         </div>
       </div>
     </section>
   </main>
 
-  <footer style="text-align: center; padding: 40px; color: #333; font-family: 'Orbitron'; font-size: 0.65rem; letter-spacing: 2px;">
-    &copy; 2026 ING. JOSE LAZO // CORE_SYSTEM_V.2 // PANAMÁ
+  <footer style="text-align: center; padding: 5rem 0; border-top: 1px solid #222; margin-top: 2rem;">
+    <p style="opacity: 0.4; font-size: 0.9rem; letter-spacing: 1px;">&copy; 2026 Ing. Jose Lazo | Bocas del Toro, Panamá</p>
   </footer>
 
 </body>
 </html>
-
 
